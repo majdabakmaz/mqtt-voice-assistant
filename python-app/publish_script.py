@@ -4,24 +4,17 @@ import time
 import tkinter as tk
 from tkinter import simpledialog
 
-from gtts import gTTS
-from playsound import playsound
-
-import pygame
-
-
 # MQTT broker details
 broker_address = "192.168.1.172"
 broker_port = 1883
 topic_for_publishing = "fromLyraT"
 topics_for_subscribing = ["fromESP32","fromLyraT"]
 
-tts = gTTS("I'm turning on the light", lang="en")   #save "on" sound
-tts.save("turn_on.mp3")
-tts = gTTS("I'm turning off the light", lang="en")  #save "off" sound
-tts.save("turn_off.mp3")   
+#tts = gTTS("I'm turning on the light", lang="en")   #save "on" sound
+#tts.save("turn_on.mp3")
+#tts = gTTS("I'm turning off the light", lang="en")  #save "off" sound
+#tts.save("turn_off.mp3")   
 
-pygame.mixer.init()
 
 def publish_message():
     user_input = entry.get()
@@ -38,13 +31,13 @@ def on_message(client, userdata, msg):
     received_message = msg.payload.decode("utf-8")
     print("Recieved  (" +msg.topic+ ")  ~>  " + received_message)
     result_label.config(text="\nRecieved  (" +msg.topic+ ")  ~>  " + received_message)  #display message
-    if "palim" in received_message:     #text to speech for turning lights
-        pygame.mixer.music.load("turn_on.mp3")
-        pygame.mixer.music.play()
+    # if "palim" in received_message:     #text to speech for turning lights
+    #     pygame.mixer.music.load("turn_on.mp3")
+    #     pygame.mixer.music.play()
 
-    if "gasim" in received_message:
-        pygame.mixer.music.load("turn_off.mp3")
-        pygame.mixer.music.play()
+    # if "gasim" in received_message:
+    #     pygame.mixer.music.load("turn_off.mp3")
+    #     pygame.mixer.music.play()
 
 
 client = mqtt.Client()
@@ -65,6 +58,13 @@ publish_button.pack()
 
 result_label = tk.Label(root, text="", font=("Helvetica", 14))
 result_label.pack()
+available_commands = ["Say hello", "What time is it?"]
+
+comm_label = tk.Label(root, text="\n\nAvailable commands:", font=("Helvetica", 14))
+comm_label.pack(anchor="w")
+for command in available_commands:
+    label = tk.Label(root, text="   "+str(command), font=("Helvetica", 14))
+    label.pack(anchor="w")
 
 root.mainloop()
 
